@@ -29,7 +29,7 @@ export class DataEnhancerRdfContext {
     }
 
     containsQuad = (queryQuad: Quad) => {
-        return this.quads.indexOf(queryQuad) < 0
+        return this.quads.find(quad => quad.equals(queryQuad)) != null
     }
     
     addQuad = (newQuad: Quad) => {
@@ -115,7 +115,7 @@ export class DataEnhancerRdfContext {
 function dataEnhancerRdfInContext(newQuads: Observable<Quad>, options: DataEnhancerRdfOptions, context: DataEnhancerRdfContext): Observable<Quad> {
     return new Observable((observer) => {
         newQuads.pipe(mergeMap((newQuad: Quad) => {
-            if (context.containsQuad(newQuad)) {
+            if (!context.containsQuad(newQuad)) {
                 context.addQuad(newQuad)
                 observer.next(newQuad)
                 return dataEnhancerRdfInContext(searchConnections(options, context), options, context)

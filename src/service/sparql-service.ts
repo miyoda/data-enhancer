@@ -13,7 +13,7 @@ export function sparqlQuery(endpoint: SparqlEndpoint, query: string): Observable
 
 export function multiSparqlQuery(endpoints: SparqlEndpoint[], query: string): Observable<{[key: string]: Term}> {
     const finalQuery = prefixesOfQuery() + '\n' + query
-    console.log(`SPARQL QUERY to ${endpoints.map(e => e.url).join(' & ')}: \n${finalQuery}`)
+    console.log(`SPARQL QUERY to ${endpoints.map(e => e.url).join(' & ')}: \n${query}`)
     return from(endpoints).pipe(
             mergeMap(endpoint => _query(endpoint, finalQuery))
         );
@@ -30,7 +30,7 @@ export function sparqlQueryAllOfIri(iri: string): Observable<Quad> {
         }
         LIMIT 100
     `).pipe(
-        throwIfEmpty(() => new Error("Iri not found " + iri)),
+        //throwIfEmpty(() => new Error("Iri not found " + iri)),
         map(row => quadOf(namedNodeOf(iri), row['p'] as Quad_Predicate, row['o'] as Quad_Object))
     )
 }

@@ -1,6 +1,6 @@
 import { NamedNode, Quad, Quad_Object, Quad_Predicate, Term } from "rdf-js";
 import { Observable, of } from "rxjs";
-import { defaultIfEmpty, filter, map, mergeMap, tap, throwIfEmpty } from 'rxjs/operators';
+import { defaultIfEmpty, delay, filter, map, mergeMap, tap, throwIfEmpty } from 'rxjs/operators';
 import { DataEnhancerRdfConnector, DataEnhancerRdfContext, dataEnhancerRdfQry } from "../service/data-enhancer-rdf-service";
 import { sparqlQueryAllOfIri } from "../service/sparql-service";
 import { FeatureCollection, GeoJSONObject, point } from "@turf/helpers";
@@ -25,7 +25,9 @@ export class SearchAllByUriObject implements DataEnhancerRdfConnector {
         let iri: string = iriQuad.object.value
         if (context.isIriCompleteAndSet(iri)) return of()
         
-        return sparqlQueryAllOfIri(iri)
+        return sparqlQueryAllOfIri(iri).pipe(
+            delay(5000) // TODO mahernandez
+        )
     }
 
 }

@@ -1,4 +1,5 @@
-import { namedNode, quad, variable } from "@rdfjs/data-model";
+import { literal, namedNode, quad, variable } from "@rdfjs/data-model";
+import { NamedNode } from "n3";
 import { BaseQuad, Quad } from "rdf-js";
 import { unPrefix } from "./rdf-prefixes";
 
@@ -14,5 +15,9 @@ export function namedNodeOf<Iri extends string = string>(iri: Iri) {
 
 export function variableOf(value: string) {
     return variable(value)
+}
+
+export function literalOf(value: string, datatype: string) {
+    return literal(value, namedNodeOf(datatype))
 }
 

@@ -15,7 +15,7 @@ export var SPARQL_ENDPOINTS: SparqlEndpoint[] = [
     { url: 'https://datos.ign.es/sparql', method: 'GET', baseIris: ['https://datos.ign.es/recurso/'], compatibleWith: [SparqlEndpointCompatibility.BIF] },
     { url: 'https://dbpedia.org/sparql', method: 'GET', baseIris: ['http://dbpedia.org/class/', 'http://dbpedia.org/ontology/'] },
     { url: 'https://es.dbpedia.org/sparql', method: 'GET', baseIris: ['http://es.dbpedia.org/resource/'] },
-    { url: 'https://datos.gob.es/virtuoso/sparql', method: 'POST', baseIris: ['http://datos.gob.es/recurso/'] },
+    { url: 'https://datos.gob.es/virtuoso/sparql', method: 'POST', baseIris: [] }, // TODO disabled baseIris 'http://datos.gob.es/recurso/'
 ]
 
 export function getSparqlEndpointsWithBif() {

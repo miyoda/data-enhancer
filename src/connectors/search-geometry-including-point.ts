@@ -1,7 +1,7 @@
 
-import { NamedNode, Quad, Term } from "rdf-js";
+import { NamedNode, Quad, Quad_Subject, Term } from "rdf-js";
 import { Observable, of } from "rxjs";
-import { defaultIfEmpty, filter, map, mergeMap, tap, throwIfEmpty } from 'rxjs/operators';
+import { defaultIfEmpty, delay, filter, map, mergeMap, tap, throwIfEmpty } from 'rxjs/operators';
 import { DataEnhancerRdfConnector, DataEnhancerRdfContext, dataEnhancerRdfQry } from "../service/data-enhancer-rdf-service";
 import { multiSparqlQuery, sparqlQuery } from "../service/sparql-service";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
@@ -13,6 +13,7 @@ let wkt = require('wkt')
 export class SearchGeometryIncludingPoint implements DataEnhancerRdfConnector {
 
     enhance = (context: DataEnhancerRdfContext): Observable<Quad> => {
+        // TODO inference: esto no exige q lat y long sean del mismo subject
         let quadsLatLong = context.meetAllConditionsNow([
             quad => quad.predicate.equals(namedNodeOf('wgs84_pos:lat')),
             quad => quad.predicate.equals(namedNodeOf('wgs84_pos:long'))
@@ -20,6 +21,7 @@ export class SearchGeometryIncludingPoint implements DataEnhancerRdfConnector {
         if (quadsLatLong == null) {
             return of()
         }
+        let subject: NamedNode = quadsLatLong[0].subject as NamedNode
         let lat: number = parseFloat(quadsLatLong[0].object.value)
         let long: number = parseFloat(quadsLatLong[1].object.value)
         
@@ -43,6 +45,7 @@ export class SearchGeometryIncludingPoint implements DataEnhancerRdfConnector {
             }),
             tap(row => context.isIriCompleteAndSet((row["geo"].value))),
             mergeMap(row => [
+                quadOf(subject, namedNodeOf('dicocot:isIntoOf'), row["s"] as NamedNode),
                 quadOf(row["s"] as NamedNode, namedNodeOf('geosparql:hasGeometry'), row["geo"] as NamedNode),
                 quadOf(row["geo"] as NamedNode, namedNodeOf('rdf:type'), row["type"] as NamedNode),
                 quadOf(row["geo"] as NamedNode, namedNodeOf('geosparql:asWKT'), row["geowkt"] as NamedNode)
