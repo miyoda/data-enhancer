@@ -1,7 +1,6 @@
 import { searchByCoordinates } from "./qry/coordinates-qry";
 import { quadsToNTriples, quadsToTurtle } from "./utils/rdf-converters";
 import * as fs from 'fs';
-import * as util from 'util'
 
 const stream = fs.createWriteStream('./out/result.ttl');
 

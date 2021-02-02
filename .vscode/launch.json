@@ -15,6 +15,15 @@
             "program": "${workspaceFolder}/src/index.ts"
         },
         {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Serve Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/src/serve.ts"
+        },
+        {
             "name": "Debug Jest Tests",
             "type": "node",
             "request": "launch",

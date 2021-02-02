@@ -25,9 +25,7 @@ export class SearchAllByUriObject implements DataEnhancerRdfConnector {
         let iri: string = iriQuad.object.value
         if (context.isIriCompleteAndSet(iri)) return of()
         
-        return sparqlQueryAllOfIri(iri).pipe(
-            delay(5000) // TODO mahernandez
-        )
+        return sparqlQueryAllOfIri(iri)
     }
 
 }

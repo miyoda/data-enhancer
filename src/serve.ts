@@ -2,7 +2,9 @@ import { searchByCoordinates } from "./qry/coordinates-qry";
 import { quadsFormat } from "./utils/rdf-converters";
 import express from "express";
 import cors from "cors";
-import { prefixes, RDF_PREFIXES } from "./utils/rdf-prefixes";
+import { prefixes } from "./utils/rdf-prefixes";
+import { Request, Response } from 'express'
+import { setLogLevel } from "./utils/logging-utils";
 
 export const app = express();
 const port = 8080; // default port to listen
@@ -14,7 +16,7 @@ app.get( "/prefixes", ( req, res ) => {
 } )
 
 
-app.get( "/stream/coordinates", ( req, res ) => {
+app.get( "/stream/coordinates", ( req: Request, res: Response ) => {
     let latitude = parseFloat(req.query.latitude as string);
     let longitude = parseFloat(req.query.longitude as string);
 
@@ -25,7 +27,7 @@ app.get( "/stream/coordinates", ( req, res ) => {
     )
 } )
 
-function eventStreamIn(res: any) {
+function eventStreamIn(res: Response) {
     res.set({
         'Cache-Control': 'no-cache',
         'Content-Type': 'text/event-stream',
@@ -33,11 +35,21 @@ function eventStreamIn(res: any) {
     });
     res.flushHeaders();
     return {
-        write: (chunk: string, encoding: string, done: ()=>void) => { res.write(`data: ${chunk}\n`); done && done(); },
-        end: (done: ()=>void) => { res.end(); done && done(); }
+        write: (chunk: string, encoding: string, done: ()=>void) => { 
+            res.write(`data: ${chunk}\n\n`)
+            console.debug('WRITE ', chunk) 
+            done && done()
+        },
+        end: (done: ()=>void) => {
+            res.write(`data: CLOSE\n\n`)
+            console.debug('CLOSE', done) 
+            done && done()
+        }
     }
 }
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
+setLogLevel('INFO')

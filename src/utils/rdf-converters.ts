@@ -7,11 +7,11 @@ export function quadsFormat(quads: Observable<Quad>, outputStream?: any, format?
     const writer = new Writer(outputStream || process.stdout, { prefixes: RDF_PREFIXES, format});
     quads.subscribe(
         quad => {
-            //console.log('QUAD', quad)
+            console.debug('QUAD', quad)
             writer.addQuad(quad)
         },
         err => console.error('ERROR', err),
-        () =>  writer.end((error, result) => console.log(result))
+        () =>  writer.end((error, result) => console.debug("END FORMAT", error, result))
     )
     return writer
 
